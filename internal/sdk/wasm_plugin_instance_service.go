@@ -229,7 +229,7 @@ func (s *WasmPluginInstanceService) addOrUpdateGroupWithRetry(name, version stri
 		}
 		if !apierrors.IsConflict(err) {
 			panic(errs.Business("Error occurs when adding or updating the WasmPlugin CR with name: " +
-				deref(plugin.Name)))
+				deref(plugin.Name) + ": " + err.Error()))
 		}
 		if attempt == maxUpdateAttempts {
 			panic(errs.Conflict("Failed to add or update WasmPlugin " + name + " (internal=" +

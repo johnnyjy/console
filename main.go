@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"os"
 	"strconv"
 
@@ -12,7 +14,23 @@ import (
 	"console/internal/service"
 )
 
+// version 编译期注入的版本号，可通过 -ldflags "-X main.version=v1.2.3" 覆盖。
+var version = "unknown"
+
 func main() {
+	showVersion := false
+	flag.BoolVar(&showVersion, "v", false, "显示版本号并退出")
+	flag.BoolVar(&showVersion, "version", false, "显示版本号并退出")
+	staticDir := flag.String("static-dir", "", "前端静态资源目录（默认与可执行文件同目录）")
+	flag.Parse()
+
+	if showVersion {
+		fmt.Println(version)
+		return
+	}
+
+	controller.SetStaticDir(*staticDir)
+
 	cfg := kubernetes.NewConfig()
 	client, err := kubernetes.NewClient(cfg)
 	if err != nil {

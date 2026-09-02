@@ -81,7 +81,7 @@ type ServiceSource struct {
 	Protocol   *string             `json:"protocol,omitempty"`
 	Sni        *string             `json:"sni,omitempty"`
 	ProxyName  *string             `json:"proxyName,omitempty"`
-	Properties map[string]any      `json:"properties,omitempty"`
+	Properties map[string]any      `json:"properties"`
 	AuthN      *ServiceSourceAuthN `json:"authN,omitempty"`
 }
 

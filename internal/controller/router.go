@@ -136,5 +136,9 @@ func RegisterRoutes(s *ghttp.Server, c *Controller) {
 		group.GET("/v1/ai/providers/:name", c.queryLlmProvider)
 		group.PUT("/v1/ai/providers/:name", c.updateLlmProvider)
 		group.DELETE("/v1/ai/providers/:name", c.deleteLlmProvider)
+
+		// 前端静态资源与 SPA 路由兜底（对应 Java WebMvcInitializer）。
+		group.ALL("/", serveStatic)
+		group.ALL("/*any", serveStatic)
 	})
 }

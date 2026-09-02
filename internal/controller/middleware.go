@@ -47,9 +47,13 @@ func AuthMiddleware(c *Controller) ghttp.HandlerFunc {
 // isAnonymousRequest 对应 isLoginRequired 的反向逻辑（类级与方法级 @AllowAnonymous）。
 func isAnonymousRequest(r *ghttp.Request) bool {
 	path := r.URL.Path
-	if pathInPrefix(path, "/session") || pathInPrefix(path, "/healthz") || pathInPrefix(path, "/landing") {
+
+	// 非后端 API（静态资源、.html 页面与 SPA 路由）一律匿名，由 serveStatic 兜底处理。
+	if !isApiRequest(path) {
 		return true
 	}
+
+	// 后端 API 中允许匿名访问的端点。
 	method := r.Method
 	if method == http.MethodPost && path == "/system/init" {
 		return true
@@ -60,8 +64,16 @@ func isAnonymousRequest(r *ghttp.Request) bool {
 	return false
 }
 
-func pathInPrefix(path, prefix string) bool {
-	return path == prefix || strings.HasPrefix(path, prefix+"/")
+// isApiRequest 判断路径是否属于需要登录校验的后端 API。
+// 仅匹配带斜杠的多段 API 前缀，避免误伤无后缀的前端路由（如 /dashboard.html）。
+func isApiRequest(path string) bool {
+	for _, p := range []string{"/v1/", "/user/", "/dashboard/", "/system/"} {
+		if strings.HasPrefix(path, p) {
+			return true
+		}
+	}
+	return path == "/grafana" || strings.HasPrefix(path, "/grafana/") ||
+		path == "/aiproxy" || strings.HasPrefix(path, "/aiproxy/")
 }
 
 func currentUser(r *ghttp.Request) *model.User {

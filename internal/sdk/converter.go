@@ -1262,6 +1262,8 @@ func (c *Converter) WasmPluginToCrInternal(plugin *model.WasmPlugin) *k8s.WasmPl
 
 func wasmPluginToCr(plugin *model.WasmPlugin, internal bool) *k8s.WasmPlugin {
 	cr := &k8s.WasmPlugin{}
+	cr.APIVersion = k8s.WasmPluginAPIGroup + "/" + k8s.WasmPluginVersion
+	cr.Kind = k8s.WasmPluginKind
 	name := deref(plugin.Name)
 	version := deref(plugin.PluginVersion)
 
@@ -1866,6 +1868,8 @@ func (c *Converter) GenerateAuthSecretName(serviceSourceName string) string {
 
 // InitV1McpBridge 对应 initV1McpBridge
 func (c *Converter) InitV1McpBridge(mcpBridge *k8s.McpBridge) {
+	mcpBridge.APIVersion = k8s.McpBridgeAPIGroup + "/" + k8s.McpBridgeVersion
+	mcpBridge.Kind = k8s.McpBridgeKind
 	mcpBridge.Name = k8s.McpBridgeDefaultName
 	mcpBridge.Spec.Registries = []k8s.RegistryConfig{}
 	mcpBridge.Spec.Proxies = []k8s.ProxyConfig{}
